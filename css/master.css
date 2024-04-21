@@ -1,0 +1,138 @@
+:root {
+  --bs-body-bg: #29323c !important;
+  /* card text color */
+  --bs-card-cap-color: white !important;
+  --amazing-yellow: #fffd0d;
+}
+body,
+html {
+  height: 100%;
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+}
+
+body {
+  background-color: #29323c;
+}
+
+.earth-img-container {
+  height: 400px;
+  width: 600px;
+}
+.earth-img {
+  height: 600px;
+  width: auto;
+}
+.hero-image {
+  height: 50%;
+  background-image: url("/images/earth.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.hero-text h1 {
+  color: var(--amazing-yellow);
+  font-size: 4rem;
+  font-weight: 400;
+}
+.hero-text h3 {
+  font-size: 2rem;
+  background-color: #000;
+}
+
+.hero-text {
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+
+.hero-text button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 10px 25px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#cities {
+  margin: auto 0;
+  text-align: center;
+}
+
+.header {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  color: #fff;
+  font-size: 2rem;
+}
+.header span {
+  font-weight: 600;
+  color: var(--amazing-yellow);
+  font-size: 1.5rem;
+}
+.countries-row {
+  justify-content: center;
+}
+.card-width {
+  max-width: 18rem !important;
+  border-color: white !important;
+}
+
+.card-header {
+  border-bottom-color: var(--amazing-yellow) !important;
+}
+footer p {
+  font-size: 300;
+  color: #fff;
+  text-align: center;
+  position: absolute;
+  top: 100%;
+  left: 40%;
+}
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 40px;
+  height: 40px;
+  color: var(--amazing-yellow);
+  background: conic-gradient(
+      from -45deg at top 20px left 50%,
+      #0000,
+      currentColor 1deg 90deg,
+      #0000 91deg
+    ),
+    conic-gradient(
+      from 45deg at right 20px top 50%,
+      #0000,
+      currentColor 1deg 90deg,
+      #0000 91deg
+    ),
+    conic-gradient(
+      from 135deg at bottom 20px left 50%,
+      #0000,
+      currentColor 1deg 90deg,
+      #0000 91deg
+    ),
+    conic-gradient(
+      from -135deg at left 20px top 50%,
+      #0000,
+      currentColor 1deg 90deg,
+      #0000 91deg
+    );
+  animation: l4 1.5s infinite cubic-bezier(0.3, 1, 0, 1);
+}
+@keyframes l4 {
+  50% {
+    width: 60px;
+    height: 60px;
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
