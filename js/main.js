@@ -1,5 +1,6 @@
 // const moment = require("./moment");
 document.addEventListener("DOMContentLoaded", (event) => {
+  document.getElementById("year").innerHTML = new Date().getFullYear();
   const cities = document.getElementById("cities");
 
   //   fetch weather data
