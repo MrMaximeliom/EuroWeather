@@ -3,11 +3,33 @@ document.addEventListener("DOMContentLoaded", (event) => {
   document.getElementById("year").innerHTML = new Date().getFullYear();
   const cities = document.getElementById("cities");
 
+  const getFiveDaysTimeStamps = () => {
+    const currentDate = new Date();
+    // Extract year, month, day, hours, minutes, and seconds
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Month starts from 0
+    const day = String(currentDate.getDate()).padStart(2, "0");
+
+    var dates = [];
+
+    for (var i = 0; i <= 5; i++) {
+      var Day = String(parseInt(day) + i).padStart(2, "0");
+      if (i != 5) {
+        dates.push(`${year}-${month}-${Day} ${21}:00:00`);
+      } else {
+        dates.push(`${year}-${month}-${Day} ${12}:00:00`);
+      }
+    }
+    return dates;
+  };
+
   //   fetch weather data
   const fetchWeatherData = async (lat, lon) => {
-    const url = `http://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civillight&output=json`;
+    const url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=56d8a800a05f199c3682921c6de2a825&units=metric`;
+    // const url = `http://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civillight&output=json`;
     const response = await fetch(url);
     const weatherInfo = response.json();
+
     return weatherInfo;
   };
   //   add event listener on change to select dropdown
@@ -16,7 +38,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   });
   // display loader
   const displayLoading = () => {
-    const weatherRow = document.getElementById("weather-row");
+    const weatherRow = document.getElementById("weather-parent");
     const loader = document.createElement("div");
     loader.id = "loader";
     loader.classList.add("loader");
@@ -28,68 +50,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
     loader.classList.add("d-none");
   };
   const getWeatherImgPath = (imgName) => {
-    let imgPath = "";
-    let path = "/images/";
-    switch (imgName) {
-      case "clear":
-        imgPath = `${path}clear.png`;
-        break;
-      case "cloudy":
-        imgPath = `${path}cloudy.png`;
-        break;
-      case "earth":
-        imgPath = `${path}earth.png`;
-        break;
-      case "fog":
-        imgPath = `${path}fog.png`;
-        break;
-      case "humid":
-        imgPath = `${path}humid.png`;
-        break;
-      case "ishower":
-        imgPath = `${path}ishower.png`;
-        break;
-      case "lightrain":
-        imgPath = `${path}lightrain.png`;
-        break;
-      case "lightsnow":
-        imgPath = `${path}lightsnow.png`;
-        break;
-      case "mcloudy":
-        imgPath = `${path}mcloudy.png`;
-        break;
-      case "oshower":
-        imgPath = `${path}oshower.png`;
-        break;
-      case "pcloudy":
-        imgPath = `${path}pcloudy.png`;
-        break;
-      case "rain":
-        imgPath = `${path}rain.png`;
-        break;
-      case "rainsnow":
-        imgPath = `${path}rainsnow.png`;
-        break;
-      case "snow":
-        imgPath = `${path}snow.png`;
-        break;
-      case "tsrain":
-        imgPath = `${path}tsrain.png`;
-        break;
-      case "tstorm":
-        imgPath = `${path}tstorm.png`;
-        break;
-      case "windy":
-        imgPath = `${path}windy.png`;
-        break;
-      default:
-        imgPath = `${path}windy.png`;
-    }
-    return imgPath;
+    const iconUrl = `https://openweathermap.org/img/wn/${imgName}@2x.png`;
+
+    return iconUrl;
   };
   // display weather data
   const displayWeatherData = async (value) => {
-    const weatherRow = document.getElementById("weather-row");
+    const weatherRow = document.getElementById("weather-parent");
     // clear screen first
     weatherRow.innerHTML = "";
 
@@ -106,60 +73,111 @@ document.addEventListener("DOMContentLoaded", (event) => {
       displayLoading();
 
       await fetchWeatherData(lat, lon).then((data) => {
-        console.log("weather data is", data.dataseries);
         // hide loading
         hideLoading();
         // loop in array
-        data.dataseries.forEach((element) => {
-          let weatherCol = document.createElement("div");
-          // add classes
-          weatherCol.classList.add("col-sm-12", "col-md-4", "col-lg-auto");
-          let weatherCard = document.createElement("div");
-          // add classes
-          weatherCard.classList.add("card", "card-width", "text-white");
-          // add weatherCard to WeatherCol
-          weatherCol.appendChild(weatherCard);
-          // create img
-          let img = document.createElement("img");
-          // add classes
-          img.classList.add("card-img-top", "bg-white");
-          // add img
-          img.src = getWeatherImgPath(element.weather);
-          // create heading
-          let heading = document.createElement("h5");
-          // add classes
-          heading.classList.add("card-header");
-          // add date
-          // heading.innerHTML = moment(element.date).format("DD MM D Y");
+        const weatherDatesTimeStamps = getFiveDaysTimeStamps();
+        console.log(weatherDatesTimeStamps);
+        let weatherRow = document.createElement("div");
+        weatherRow.classList.add(
+          "row",
+          "justify-content-center",
+          "mt-3",
+          "mb-3"
+        );
+        // add it to weather parent
+        const weatherParent = document.getElementById("weather-parent");
+        weatherParent.appendChild(weatherRow);
+        data.list.forEach((element) => {
+          console.log("matching: ", element.dt_txt);
+          if (weatherDatesTimeStamps.includes(element.dt_txt)) {
+            console.log(element.dt_txt, "now");
+            // row justify-content-center m-0 border-0 gap-5
 
-          var year = element.date.toString().substr(0, 4);
-          var month = element.date.toString().substr(4, 2) - 1;
-          var day = element.date.toString().substr(6, 2);
-          const date = new Date(year, month, day);
-          heading.innerHTML = moment(date).format("ddd, MMM D Y");
-          // create div body
-          let cardBody = document.createElement("div");
-          // add classes
-          cardBody.classList.add("card-body", "text-center");
-          // create max temprature tag
-          let highTemp = document.createElement("h6");
-          // add max temperature
-          highTemp.innerHTML = "High: " + element.temp2m.max + "&deg;C";
-          // create min temrature tag
-          let minTemp = document.createElement("h6");
-          // add min temrature
-          minTemp.innerHTML = "Low: " + element.temp2m.min + "&deg;C.";
-          // add degrees to card-body
-          cardBody.appendChild(highTemp);
-          cardBody.appendChild(minTemp);
-          // add img - heading - cardBody to card
-          weatherCard.appendChild(img);
-          weatherCard.appendChild(heading);
-          weatherCard.appendChild(cardBody);
-          // add weather card to col
-          weatherCol.appendChild(weatherCard);
-          // add weather col to weather row
-          weatherRow.appendChild(weatherCol);
+            let weatherCol = document.createElement("div");
+            // add classes
+            weatherCol.classList.add("col-sm-12", "col-md-3", "col-lg-3");
+            let weatherCard = document.createElement("div");
+            // add classes
+            weatherCard.classList.add("card", "card-width", "text-white");
+            // add weatherCard to WeatherCol
+            weatherCol.appendChild(weatherCard);
+            // create img div
+            let imgDev = document.createElement("div");
+            // create img
+            let img = document.createElement("img");
+            // add classes
+            //img.classList.add("card-img-top", "bg-white");
+            // add img
+            img.src = getWeatherImgPath(element.weather[0].icon);
+
+            img.style.width = "100px";
+            img.style.height = "100px";
+
+            imgDev.classList.add("bg-white");
+
+            imgDev.style.textAlign = "center";
+
+            imgDev.appendChild(img);
+
+            // create heading
+            let heading = document.createElement("h5");
+            // add classes
+            heading.classList.add("card-header");
+            // add date
+            const currentDate = new Date(element.dt_txt);
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Month starts from 0
+            const day = String(currentDate.getDate()).padStart(2, "0");
+            const date = new Date(year, month, day);
+            heading.innerHTML = moment(date).format("ddd, MMM D Y");
+            // create div body
+            let cardBody = document.createElement("div");
+            // add classes
+            cardBody.classList.add("card-body", "text-center");
+            // create max temprature tag
+            let highTemp = document.createElement("h6");
+            // add max temperature
+            highTemp.innerHTML = "High: " + element.main.temp_max + "&deg;C";
+            // create min temrature tag
+            let minTemp = document.createElement("h6");
+            // add min temrature
+            minTemp.innerHTML = "Low: " + element.main.temp_max + "&deg;C.";
+            // add degrees to card-body
+            cardBody.appendChild(highTemp);
+            cardBody.appendChild(minTemp);
+            // add img - heading - cardBody to card
+            weatherCard.appendChild(imgDev);
+            weatherCard.appendChild(heading);
+            weatherCard.appendChild(cardBody);
+            // add weather card to col
+            weatherCol.appendChild(weatherCard);
+            // check if nodes are 3 then create new parent
+            if (weatherRow.childNodes.length == 3) {
+              console.log("here now we are tripples!!");
+              // try to fetch exist parent
+              const oldWeatherRow = document.getElementById("old-weather-row");
+              if (!oldWeatherRow) {
+                console.log("HEllloooo");
+                const newWeatherRow = document.createElement("div");
+                newWeatherRow.classList.add(
+                  "row",
+                  "justify-content-center",
+                  "mt-3",
+                  "mb-3"
+                );
+                newWeatherRow.setAttribute("id", "old-weather-row");
+                // append it in document inside weather parent
+                weatherParent.appendChild(newWeatherRow);
+                newWeatherRow.appendChild(weatherCol);
+              } else {
+                oldWeatherRow.appendChild(weatherCol);
+              }
+            } else {
+              // add weather col to weather row
+              weatherRow.appendChild(weatherCol);
+            }
+          }
         });
       });
     }
