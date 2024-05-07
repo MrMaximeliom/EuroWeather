@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
   //   fetch weather data
   const fetchWeatherData = async (lat, lon) => {
-    const url = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=56d8a800a05f199c3682921c6de2a825&units=metric`;
+    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=56d8a800a05f199c3682921c6de2a825&units=metric`;
     // const url = `http://www.7timer.info/bin/api.pl?lon=${lon}&lat=${lat}&product=civillight&output=json`;
     const response = await fetch(url);
     const weatherInfo = response.json();
